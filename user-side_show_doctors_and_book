@@ -1,0 +1,151 @@
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
+class BookingRequestScreen extends StatefulWidget {
+  @override
+  _BookingRequestScreenState createState() => _BookingRequestScreenState();
+}
+
+class _BookingRequestScreenState extends State<BookingRequestScreen> {
+  Color primaryColor = Colors.blue[900];
+  Color secondaryColor = Colors.blue[700];
+
+  TextEditingController nameController = TextEditingController();
+  TextEditingController dateController = TextEditingController();
+  TextEditingController timeController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController ageController = TextEditingController();
+  TextEditingController genderController = TextEditingController();
+  TextEditingController conditionController = TextEditingController();
+  TextEditingController remarksController = TextEditingController();
+
+  SizedBox heightGap = SizedBox(height: 20);
+  SizedBox smallheightGap = SizedBox(height: 8);
+  SizedBox widthGap = SizedBox(width: 20);
+
+  _buildTextField(TextEditingController controller, String labelText) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        decoration: BoxDecoration(
+            color: secondaryColor, border: Border.all(color: Colors.blue)),
+        child: TextField(
+          controller: controller,
+          style: TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+              contentPadding: EdgeInsets.symmetric(horizontal: 10),
+              labelText: labelText,
+              labelStyle: TextStyle(color: Colors.white),
+              border: InputBorder.none),
+        ),
+      ),
+    );
+  }
+
+  Map<String, dynamic> bookingRequestToAdd;
+
+  // creating a reference variable
+  CollectionReference collectionReference =
+      Firestore.instance.collection("users");
+
+  /*CollectionReference idCollectionReference =
+      Firestore.instance.collection("users.id");*/
+
+  // addProduct is the method responsible for adding products to FIRESTORE
+  addBookingRequest() {
+    bookingRequestToAdd = {
+      //"id": idCollectionReference,
+      "name": nameController.text,
+      "date": dateController.text,
+      "time": timeController.text,
+      "phone": phoneController.text,
+      "email": emailController.text,
+      "age": ageController.text,
+      "gender": genderController.text,
+      "condition": conditionController.text,
+      "remarks": remarksController.text,
+    };
+
+    // calling firestore add method
+    collectionReference.add(bookingRequestToAdd).whenComplete(
+          () =>
+              Fluttertoast.showToast(msg: " Booking Request Sent to Doctor!! "),
+        );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: <Widget>[
+          IconButton(
+            onPressed: () {
+              /*
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => ListScreen(),
+                ),
+              );*/
+            },
+            icon: Icon(Icons.folder_open),
+            color: Colors.white,
+          ),
+        ],
+      ),
+      backgroundColor: primaryColor,
+      body: SingleChildScrollView(
+        child: Container(
+          child: Column(
+            children: <Widget>[
+              heightGap,
+              heightGap,
+              heightGap,
+              _buildTextField(nameController, 'Name'),
+              heightGap,
+              _buildTextField(dateController, 'Date'),
+              heightGap,
+              _buildTextField(timeController, 'Time'),
+              heightGap,
+              _buildTextField(phoneController, 'Phone Number'),
+              heightGap,
+              _buildTextField(emailController, 'email'),
+              heightGap,
+              _buildTextField(ageController, 'Age'),
+              heightGap,
+              _buildTextField(genderController, 'Gender'),
+              heightGap,
+              _buildTextField(conditionController, 'Condition'),
+              heightGap,
+              _buildTextField(remarksController, 'Remarks'),
+              heightGap,
+              heightGap,
+              heightGap,
+              heightGap,
+              RaisedButton(
+                elevation: 0.5,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                textColor: Colors.white,
+                color: Colors.pinkAccent,
+                onPressed: () {
+                  addBookingRequest();
+                },
+                child: Text('Send Booking Request'),
+              ),
+              heightGap,
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
